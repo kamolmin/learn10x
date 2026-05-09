@@ -403,6 +403,167 @@ export default function StudentDashboard({ lang, setLang, user, onLogout }) {
           </div>
         </div>
 
+        {/* Time Benchmark System */}
+        <div className="animate-fade-up-3 card" style={{ marginBottom: 20 }}>
+          <div className="card-header">
+            <span className="card-title">⏱️ {lang === 'uz' ? 'Vaqt Tahlili — Savol Boshiga' : 'Time Analysis — Per Question'}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
+              {lang === 'uz' ? 'O\'rtacha sarflangan vaqt (soniya/savol)' : 'Average time spent (seconds/question)'}
+            </span>
+          </div>
+
+          {/* Benchmark explanation */}
+          <div style={{ padding: '16px 24px', background: '#f8fafc', borderBottom: '1px solid var(--border)' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)', marginBottom: 10 }}>
+              📌 {lang === 'uz' ? 'Standart ko\'rsatkichlar (etalon):' : 'Benchmark Standards:'}
+            </div>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              {[
+                { level: lang === 'uz' ? '1-Daraja (Oson)' : 'Level 1 (Easy)',   best: '≤ 5 son',  standard: '10 son', struggling: '> 15 son', color: '#16a34a' },
+                { level: lang === 'uz' ? '2-Daraja (O\'rta)' : 'Level 2 (Medium)', best: '≤ 15 son', standard: '25 son', struggling: '> 40 son', color: '#0891b2' },
+                { level: lang === 'uz' ? '3-Daraja (Qiyin)' : 'Level 3 (Hard)',   best: '≤ 45 son', standard: '90 son', struggling: '> 120 son', color: '#f97316' },
+              ].map((b, i) => (
+                <div key={i} style={{
+                  flex: 1, minWidth: 200,
+                  padding: '12px 14px', borderRadius: 10,
+                  border: `1px solid ${b.color}30`,
+                  background: b.color + '08',
+                }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: b.color, marginBottom: 8 }}>{b.level}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                      <span style={{ color: '#16a34a', fontWeight: 600 }}>🟢 {lang === 'uz' ? 'Eng yaxshi' : 'Best'}</span>
+                      <span style={{ fontWeight: 700, color: '#16a34a' }}>{b.best}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                      <span style={{ color: '#d97706', fontWeight: 600 }}>🟡 {lang === 'uz' ? 'Standart' : 'Standard'}</span>
+                      <span style={{ fontWeight: 700, color: '#d97706' }}>{b.standard}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+                      <span style={{ color: '#dc2626', fontWeight: 600 }}>🔴 {lang === 'uz' ? 'Qiynalmoqda' : 'Struggling'}</span>
+                      <span style={{ fontWeight: 700, color: '#dc2626' }}>{b.struggling}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Student's actual performance vs benchmark */}
+          <div style={{ padding: '20px 24px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)', marginBottom: 14 }}>
+              🎯 {lang === 'uz' ? 'Sizning natijangiz:' : 'Your Performance:'}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {[
+                {
+                  level: lang === 'uz' ? '1-Daraja (Oson savollar)' : 'Level 1 (Easy questions)',
+                  avg: Math.round(student.timeAvg * 0.6),
+                  benchmark: 10,
+                  best: 5,
+                  struggling: 15,
+                  color: '#16a34a',
+                },
+                {
+                  level: lang === 'uz' ? '2-Daraja (O\'rta savollar)' : 'Level 2 (Medium questions)',
+                  avg: Math.round(student.timeAvg * 1.0),
+                  benchmark: 25,
+                  best: 15,
+                  struggling: 40,
+                  color: '#0891b2',
+                },
+                {
+                  level: lang === 'uz' ? '3-Daraja (Qiyin savollar)' : 'Level 3 (Hard questions)',
+                  avg: Math.round(student.timeAvg * 2.2),
+                  benchmark: 90,
+                  best: 45,
+                  struggling: 120,
+                  color: '#f97316',
+                },
+              ].map((row, i) => {
+                const isGreat     = row.avg <= row.best;
+                const isGood      = row.avg <= row.benchmark;
+                const isStruggle  = row.avg > row.struggling;
+                const statusColor = isGreat ? '#16a34a' : isGood ? '#d97706' : isStruggle ? '#dc2626' : '#d97706';
+                const statusBg    = isGreat ? '#dcfce7'  : isGood ? '#fef9c3'  : isStruggle ? '#fee2e2'  : '#fef9c3';
+                const statusIcon  = isGreat ? '🟢' : isGood ? '🟡' : '🔴';
+                const statusText  = isGreat
+                  ? (lang === 'uz' ? 'Ajoyib!' : 'Excellent!')
+                  : isGood
+                  ? (lang === 'uz' ? 'Yaxshi' : 'Good')
+                  : (lang === 'uz' ? 'Sekinlashmoqda' : 'Too Slow');
+
+                const maxBar = row.struggling * 1.3;
+                const fillPct = Math.min(100, (row.avg / maxBar) * 100);
+                const benchPct = (row.benchmark / maxBar) * 100;
+
+                return (
+                  <div key={i} style={{ padding: '14px 16px', background: 'var(--surface)', borderRadius: 10, border: '1px solid var(--border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: row.color }}>{row.level}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 20, fontWeight: 900, color: statusColor }}>{row.avg} {lang === 'uz' ? 'son' : 's'}</span>
+                        <span style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700, background: statusBg, color: statusColor }}>
+                          {statusIcon} {statusText}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Visual bar */}
+                    <div style={{ position: 'relative', height: 10, background: '#e2e8f0', borderRadius: 99, overflow: 'visible' }}>
+                      {/* Student fill */}
+                      <div style={{
+                        position: 'absolute', left: 0, top: 0,
+                        width: `${fillPct}%`, height: '100%',
+                        background: statusColor, borderRadius: 99,
+                        transition: 'width 0.6s ease',
+                      }} />
+                      {/* Benchmark marker */}
+                      <div style={{
+                        position: 'absolute',
+                        left: `${benchPct}%`,
+                        top: -4, bottom: -4,
+                        width: 2,
+                        background: '#1e40af',
+                        borderRadius: 99,
+                      }} />
+                    </div>
+
+                    {/* Bar labels */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: 'var(--text-3)' }}>
+                      <span>0</span>
+                      <span style={{ color: '#1e40af', fontWeight: 700 }}>
+                        │ {lang === 'uz' ? 'Standart' : 'Standard'}: {row.benchmark}{lang === 'uz' ? 'son' : 's'}
+                      </span>
+                      <span>{Math.round(maxBar)}{lang === 'uz' ? 'son' : 's'}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Overall average */}
+            <div style={{
+              marginTop: 16, padding: '14px 18px',
+              background: 'linear-gradient(135deg, #0a162808, #065A8208)',
+              borderRadius: 10, border: '1px solid var(--border)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)' }}>
+                  {lang === 'uz' ? 'Umumiy o\'rtacha (barcha darajalar)' : 'Overall Average (all levels)'}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
+                  {lang === 'uz' ? 'Har bir savolga sarflangan o\'rtacha vaqt' : 'Average time spent per question'}
+                </div>
+              </div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--blue)' }}>
+                {student.timeAvg} <span style={{ fontSize: 13, fontWeight: 600 }}>{lang === 'uz' ? 'son/savol' : 's/q'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Recent scores + weak areas */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
 
@@ -410,26 +571,40 @@ export default function StudentDashboard({ lang, setLang, user, onLogout }) {
           <div className="animate-fade-up-3 card">
             <div className="card-header"><span className="card-title">📊 {t.recentScores}</span></div>
             <div className="card-body" style={{ padding: 0 }}>
-              {student.recentTests.map((test, i) => (
-                <div key={i} style={{
-                  padding: '14px 20px',
-                  borderBottom: i < student.recentTests.length - 1 ? '1px solid var(--border)' : 'none',
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{test.subject}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>{test.date} · {test.level}-{lang === 'uz' ? 'daraja' : 'level'}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: test.score >= 80 ? '#16a34a' : test.score >= 65 ? 'var(--teal)' : 'var(--red)' }}>
-                      {test.score}%
+              {student.recentTests.map((test, i) => {
+                const benchmarks = { 1: 10, 2: 25, 3: 90 };
+                const bench = benchmarks[test.level] || 25;
+                const timeColor = test.time <= bench * 0.6 ? '#16a34a' : test.time <= bench ? '#d97706' : '#dc2626';
+                const timeIcon  = test.time <= bench * 0.6 ? '🟢' : test.time <= bench ? '🟡' : '🔴';
+                return (
+                  <div key={i} style={{
+                    padding: '14px 20px',
+                    borderBottom: i < student.recentTests.length - 1 ? '1px solid var(--border)' : 'none',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{test.subject}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
+                        {test.date} · {test.level}-{lang === 'uz' ? 'daraja' : 'level'}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, color: test.time > 60 ? 'var(--orange)' : 'var(--text-3)' }}>
-                      ⏱ {test.time}s
+                    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: test.score >= 80 ? '#16a34a' : test.score >= 65 ? 'var(--teal)' : 'var(--red)' }}>
+                          {test.score}%
+                        </div>
+                        <div style={{ fontSize: 10, color: 'var(--text-3)' }}>{lang === 'uz' ? 'ball' : 'score'}</div>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: timeColor }}>
+                          {timeIcon} {test.time}
+                        </div>
+                        <div style={{ fontSize: 10, color: 'var(--text-3)' }}>{lang === 'uz' ? 'son/savol' : 's/q'}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
