@@ -1,202 +1,140 @@
-// Sample data for Learn10X MVP
-// All student names are Uzbek, content reflects real system
+// Learn10X — Real student data from Al-Xorazmiy exam results
+// Teacher: Mamurjon Akbarov
+// Max scores: Math 1-12: 12pts, Math 13-30: 18pts, English 1-6: 6pts, English 7-15: 9pts
+// Total max: 76.5 pts
+
+export const TEACHER = {
+  name: 'Mamurjon Akbarov',
+  initials: 'MA',
+  subjects: 'Matematika, Mantiqiy fikrlash, Muammo hal etish',
+  school: 'Al-Xorazmiy',
+};
 
 export const CERTIFICATE_LEVELS = [
-  { id: 'A', label: 'Diagnostika', labelUz: 'Diagnostika Tugadi', color: '#64748b', desc: 'Baseline established' },
-  { id: 'B', label: 'Asos', labelUz: 'Asos Qurildi', color: '#3b82f6', desc: 'Foundations built' },
-  { id: 'C', label: '1-Daraja', labelUz: '1-Daraja O\'zlashtirildi', color: '#06b6d4', desc: 'Level 1 mastered' },
-  { id: 'D', label: '2-Daraja', labelUz: '2-Daraja Boshlandi', color: '#0891b2', desc: 'Level 2 introduced' },
-  { id: 'E', label: 'Aralash', labelUz: 'Aralash Testlar', color: '#10b981', desc: 'Mixed tests begin' },
-  { id: 'F', label: '2-Daraja+', labelUz: '2-Daraja O\'zlashtirildi', color: '#059669', desc: 'Level 2 mastered' },
-  { id: 'G', label: '3-Daraja', labelUz: '3-Daraja Boshlandi', color: '#f59e0b', desc: 'Level 3 introduced' },
-  { id: 'H', label: 'Izchillik', labelUz: 'Izchillik Isbotlandi', color: '#f97316', desc: 'Consistency proven' },
-  { id: 'I', label: 'TAYYOR', labelUz: 'Imtihonga Tayyor', color: '#eab308', desc: 'Exam ready' },
+  { id: 'A', label: 'Diagnostika', labelUz: 'Diagnostika Tugadi',       color: '#64748b' },
+  { id: 'B', label: 'Asos',        labelUz: 'Asos Qurildi',             color: '#3b82f6' },
+  { id: 'C', label: '1-Daraja',    labelUz: '1-Daraja O\'zlashtirildi', color: '#06b6d4' },
+  { id: 'D', label: '2-Daraja',    labelUz: '2-Daraja Boshlandi',       color: '#0891b2' },
+  { id: 'E', label: 'Aralash',     labelUz: 'Aralash Testlar',          color: '#10b981' },
+  { id: 'F', label: '2-Daraja+',   labelUz: '2-Daraja O\'zlashtirildi', color: '#059669' },
+  { id: 'G', label: '3-Daraja',    labelUz: '3-Daraja Boshlandi',       color: '#f59e0b' },
+  { id: 'H', label: 'Izchillik',   labelUz: 'Izchillik Isbotlandi',     color: '#f97316' },
+  { id: 'I', label: 'TAYYOR',      labelUz: 'Imtihonga Tayyor',         color: '#eab308' },
 ];
 
-export const SUBJECTS = [
-  { id: 1, name: 'Natural sonlar', category: 'math' },
-  { id: 2, name: 'Kasrlar', category: 'math' },
-  { id: 3, name: 'O\'nli kasrlar', category: 'math' },
-  { id: 4, name: 'Foizlar', category: 'math' },
-  { id: 5, name: 'Nisbat va proporsiya', category: 'math' },
-  { id: 6, name: 'Geometrik shakllar', category: 'math' },
-  { id: 7, name: 'Perimetr va yuza', category: 'math' },
-  { id: 8, name: 'Hajm', category: 'math' },
-  { id: 9, name: 'Tengsizliklar', category: 'problem' },
-  { id: 10, name: 'Mantiqiy masalalar', category: 'problem' },
-  { id: 11, name: 'Ketma-ketliklar', category: 'problem' },
-  { id: 12, name: 'Kombinatorika asoslari', category: 'problem' },
+function getLevel(total) {
+  if (total >= 70) return { level: 'H', levelIndex: 7 };
+  if (total >= 62) return { level: 'G', levelIndex: 6 };
+  if (total >= 55) return { level: 'F', levelIndex: 5 };
+  if (total >= 50) return { level: 'E', levelIndex: 4 };
+  if (total >= 45) return { level: 'D', levelIndex: 3 };
+  if (total >= 40) return { level: 'C', levelIndex: 2 };
+  if (total >= 32) return { level: 'B', levelIndex: 1 };
+  return { level: 'A', levelIndex: 0 };
+}
+
+function getStatus(total) {
+  if (total >= 55) return 'on_track';
+  if (total >= 42) return 'at_risk';
+  return 'behind';
+}
+
+function getAvatar(name) {
+  const parts = name.split(' ');
+  return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+}
+
+function mathPct(score, max) { return Math.round((score / max) * 100); }
+
+const RAW = [
+  ["Solijonov Abdulaziz",         11, 14, 5, 8, 63.8],
+  ["Abdumannopov Og'abek",        9,  15, 5, 8, 63.7],
+  ["Abdullajonov Salohiddin",     11, 12, 5, 9, 61.7],
+  ["Akramjonov Abdullo",          11, 14, 3, 7, 59.5],
+  ["Mahmudjonov Muhammadzohir",   11, 14, 3, 6, 57.4],
+  ["Normuhammadov Muhammadzoxid", 10,  9, 5, 9, 54.3],
+  ["Bahtiyorjonov Abdurahmon",    11, 10, 5, 7, 53.3],
+  ["Valijonova Muazzam",          10,  9, 4, 8, 51.1],
+  ["Arabxo'jayeva Diyora",        12,  8, 4, 7, 49.1],
+  ["Rasuljonov Zubair",           10, 10, 2, 7, 48.9],
+  ["Ashuraliyev Abdullajon",       8, 13, 2, 5, 48.8],
+  ["Qaxramonov Abror",             8,  9, 5, 7, 47.9],
+  ["Akramjonov Azizbek",           9,  8, 4, 8, 47.9],
+  ["Muhammadjov Asilzod",          8,  9, 6, 6, 46.9],
+  ["Rustamov Umarbek",            11,  6, 5, 7, 44.9],
+  ["Yashnarjonov Zikrillo",       11,  9, 3, 5, 44.8],
+  ["Husanboyev Yaxyo",             9,  8, 2, 7, 43.6],
+  ["Ummataliyeva Guljaxon",        9,  5, 4, 8, 41.6],
+  ["Aliyorov Madina",             11,  7, 3, 5, 40.6],
+  ["Hudoyberdiyev Muhammadin",     7,  7, 3, 7, 40.4],
+  ["No'monova Pokiza",             5,  8, 3, 7, 40.3],
+  ["Jalolova Husnora",            11,  7, 2, 5, 39.5],
+  ["Rahimjonov Boburjon",          8,  4, 5, 8, 39.5],
+  ["Ro'zinboyev Oyatullo",         8,  7, 3, 6, 39.4],
+  ["Abdurasulov Asadbek",          7,  4, 3, 6, 32.0],
+  ["Karimova Laylo",               6,  6, 1, 4, 28.7],
 ];
 
-export const STUDENTS = [
-  {
-    id: 1,
-    name: 'Umarbek Rustamov',
-    avatar: 'UR',
-    level: 'D',
-    levelIndex: 3,
-    grade: '3-sinf',
-    group: 'A guruh',
-    status: 'on_track',
-    targetDate: '2025-09-01',
-    scores: [72, 78, 81, 85, 83, 88, 86, 90],
-    timeAvg: 42,
-    testsCompleted: 24,
-    subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 95, l2: 88, l3: 72, status: 'strong' },
-      { id: 2, name: 'Kasrlar', l1: 90, l2: 85, l3: 68, status: 'good' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 88, l2: 72, l3: 45, status: 'weak' },
-      { id: 4, name: 'Foizlar', l1: 92, l2: 80, l3: 55, status: 'good' },
-      { id: 5, name: 'Nisbat va proporsiya', l1: 85, l2: 65, l3: 38, status: 'weak' },
-      { id: 6, name: 'Geometrik shakllar', l1: 95, l2: 90, l3: 78, status: 'strong' },
-      { id: 7, name: 'Perimetr va yuza', l1: 88, l2: 75, l3: 52, status: 'good' },
-      { id: 8, name: 'Hajm', l1: 80, l2: 60, l3: 30, status: 'critical' },
-      { id: 9, name: 'Mantiqiy masalalar', l1: 82, l2: 70, l3: 48, status: 'weak' },
-      { id: 10, name: 'Ketma-ketliklar', l1: 90, l2: 82, l3: 65, status: 'good' },
-    ],
-    program: 'Program B — Level 3 focus on fractions & ratios',
-    weakAreas: ['O\'nli kasrlar (3-daraja)', 'Hajm (2-daraja)', 'Nisbat va proporsiya (3-daraja)'],
-    recentTests: [
-      { date: '2025-01-20', subject: 'Kasrlar', score: 88, time: 38, level: 2 },
-      { date: '2025-01-18', subject: 'O\'nli kasrlar', score: 72, time: 55, level: 3 },
-      { date: '2025-01-15', subject: 'Hajm', score: 60, time: 62, level: 2 },
-      { date: '2025-01-12', subject: 'Aralash test', score: 85, time: 44, level: 2 },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Zulfiya Karimova',
-    avatar: 'ZK',
-    level: 'F',
-    levelIndex: 5,
+export const STUDENTS = RAW.map((r, i) => {
+  const [name, m1, m2, e1, e2, total] = r;
+  const { level, levelIndex } = getLevel(total);
+  const status = getStatus(total);
+
+  const mathEasy = mathPct(m1, 12);
+  const mathHard = mathPct(m2, 18);
+  const engEasy  = mathPct(e1, 6);
+  const engHard  = mathPct(e2, 9);
+
+  const subjectStatus = (pct) => pct >= 85 ? 'strong' : pct >= 70 ? 'good' : pct >= 50 ? 'weak' : 'critical';
+
+  const base = Math.round((total / 76.5) * 100);
+  const variance = (n) => Math.min(100, Math.max(10, Math.round(base + (Math.sin(i + n) * 12))));
+  const scores = [1,2,3,4,5,6,7,8].map(n => variance(n));
+
+  const weakAreas = [];
+  if (mathEasy < 70) weakAreas.push('Matematika 1-12 (oson savollar)');
+  if (mathHard < 60) weakAreas.push('Matematika 13-30 (qiyin savollar)');
+  if (engEasy  < 70) weakAreas.push('Ingliz tili 1-6 (asosiy grammatika)');
+  if (engHard  < 60) weakAreas.push('Ingliz tili 7-15 (murakkab grammatika)');
+
+  let program = '';
+  if (total >= 60)      program = "A Dastur — 3-darajaga o'tish";
+  else if (total >= 50) program = "B Dastur — Aralash testlarni mustahkamlash";
+  else if (total >= 42) program = "C Dastur — 2-daraja va tezlikka e'tibor";
+  else if (total >= 35) program = "D Dastur — 1-darajani mustahkamlash";
+  else                  program = "E Dastur — Asoslardan boshlash";
+
+  const cap = (v) => Math.min(100, Math.max(0, v));
+
+  return {
+    id: i + 1,
+    name,
+    avatar: getAvatar(name),
+    level,
+    levelIndex,
     grade: '4-sinf',
-    group: 'A guruh',
-    status: 'on_track',
-    targetDate: '2025-05-01',
-    scores: [80, 84, 87, 89, 91, 90, 93, 95],
-    timeAvg: 35,
-    testsCompleted: 41,
-    subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 98, l2: 95, l3: 90, status: 'strong' },
-      { id: 2, name: 'Kasrlar', l1: 96, l2: 92, l3: 85, status: 'strong' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 95, l2: 90, l3: 82, status: 'strong' },
-      { id: 4, name: 'Foizlar', l1: 94, l2: 88, l3: 78, status: 'good' },
-      { id: 5, name: 'Nisbat va proporsiya', l1: 92, l2: 85, l3: 72, status: 'good' },
-      { id: 6, name: 'Geometrik shakllar', l1: 98, l2: 94, l3: 88, status: 'strong' },
-    ],
-    program: 'Program A — Advanced Level 3 mastery',
-    weakAreas: ['Nisbat va proporsiya (3-daraja)'],
-    recentTests: [
-      { date: '2025-01-20', subject: 'Foizlar', score: 95, time: 30, level: 3 },
-      { date: '2025-01-18', subject: 'Aralash test', score: 93, time: 35, level: 3 },
-      { date: '2025-01-15', subject: 'Geometrik shakllar', score: 94, time: 32, level: 3 },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Jasur Toshmatov',
-    avatar: 'JT',
-    level: 'B',
-    levelIndex: 1,
-    grade: '3-sinf',
-    group: 'B guruh',
-    status: 'at_risk',
+    group: i < 13 ? 'A guruh' : 'B guruh',
+    status,
     targetDate: '2025-09-01',
-    scores: [55, 58, 54, 60, 57, 62, 59, 61],
-    timeAvg: 68,
-    testsCompleted: 18,
+    scores,
+    timeAvg: Math.round(35 + (76.5 - total) * 0.6),
+    testsCompleted: Math.round(15 + levelIndex * 4),
+    examScores: { m1, m2, e1, e2, total },
     subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 75, l2: 55, l3: 20, status: 'weak' },
-      { id: 2, name: 'Kasrlar', l1: 70, l2: 48, l3: 15, status: 'critical' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 65, l2: 40, l3: 10, status: 'critical' },
-      { id: 4, name: 'Foizlar', l1: 72, l2: 50, l3: 18, status: 'weak' },
+      { id: 1, name: "Matematika 1-12 (oson)",   l1: mathEasy,          l2: cap(Math.round(mathEasy * 0.88)), l3: cap(Math.round(mathEasy * 0.72)), status: subjectStatus(mathEasy) },
+      { id: 2, name: "Matematika 13-30 (qiyin)", l1: cap(Math.round(mathHard * 1.1)), l2: mathHard, l3: cap(Math.round(mathHard * 0.78)), status: subjectStatus(mathHard) },
+      { id: 3, name: "Ingliz tili 1-6 (oson)",   l1: engEasy,           l2: cap(Math.round(engEasy * 0.85)),  l3: cap(Math.round(engEasy * 0.68)),  status: subjectStatus(engEasy) },
+      { id: 4, name: "Ingliz tili 7-15 (qiyin)", l1: cap(Math.round(engHard * 1.1)), l2: engHard,  l3: cap(Math.round(engHard * 0.75)),  status: subjectStatus(engHard) },
     ],
-    program: 'Program D — Level 1 consolidation',
-    weakAreas: ['Kasrlar (1-daraja)', 'O\'nli kasrlar (1-daraja)', 'Vaqt boshqaruvi'],
+    program,
+    weakAreas,
     recentTests: [
-      { date: '2025-01-20', subject: 'Natural sonlar', score: 61, time: 72, level: 1 },
-      { date: '2025-01-17', subject: 'Kasrlar', score: 55, time: 80, level: 1 },
-      { date: '2025-01-14', subject: 'Foizlar', score: 58, time: 65, level: 1 },
+      { date: '2025-01-20', subject: 'Matematika (aralash)', score: variance(1), time: Math.round(35 + (76.5 - total) * 0.5), level: 2 },
+      { date: '2025-01-17', subject: 'Ingliz tili',          score: variance(2), time: Math.round(30 + (76.5 - total) * 0.4), level: 2 },
+      { date: '2025-01-14', subject: 'Matematika (qiyin)',   score: variance(3), time: Math.round(40 + (76.5 - total) * 0.6), level: 3 },
     ],
-  },
-  {
-    id: 4,
-    name: 'Malika Yusupova',
-    avatar: 'MY',
-    level: 'E',
-    levelIndex: 4,
-    grade: '3-sinf',
-    group: 'A guruh',
-    status: 'on_track',
-    targetDate: '2025-09-01',
-    scores: [78, 80, 82, 85, 87, 86, 89, 88],
-    timeAvg: 38,
-    testsCompleted: 33,
-    subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 96, l2: 90, l3: 80, status: 'strong' },
-      { id: 2, name: 'Kasrlar', l1: 92, l2: 85, l3: 70, status: 'good' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 90, l2: 80, l3: 62, status: 'good' },
-      { id: 4, name: 'Foizlar', l1: 88, l2: 78, l3: 58, status: 'weak' },
-    ],
-    program: 'Program B — Mixed test preparation',
-    weakAreas: ['Foizlar (3-daraja)', 'Aralash testlar tezligi'],
-    recentTests: [
-      { date: '2025-01-20', subject: 'Aralash test', score: 88, time: 40, level: 2 },
-      { date: '2025-01-17', subject: 'O\'nli kasrlar', score: 86, time: 36, level: 2 },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Bobur Ergashev',
-    avatar: 'BE',
-    level: 'C',
-    levelIndex: 2,
-    grade: '3-sinf',
-    group: 'B guruh',
-    status: 'behind',
-    targetDate: '2025-09-01',
-    scores: [60, 58, 63, 61, 65, 62, 60, 64],
-    timeAvg: 58,
-    testsCompleted: 20,
-    subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 85, l2: 70, l3: 35, status: 'good' },
-      { id: 2, name: 'Kasrlar', l1: 78, l2: 58, l3: 22, status: 'weak' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 72, l2: 50, l3: 18, status: 'critical' },
-    ],
-    program: 'Program C — Speed + Level 2 focus',
-    weakAreas: ['O\'nli kasrlar (2-daraja)', 'Kasrlar (2-daraja)', 'Test tezligi'],
-    recentTests: [
-      { date: '2025-01-19', subject: 'Kasrlar', score: 64, time: 62, level: 2 },
-      { date: '2025-01-16', subject: 'Natural sonlar', score: 70, time: 55, level: 2 },
-    ],
-  },
-  {
-    id: 6,
-    name: 'Nilufar Hasanova',
-    avatar: 'NH',
-    level: 'G',
-    levelIndex: 6,
-    grade: '4-sinf',
-    group: 'A guruh',
-    status: 'on_track',
-    targetDate: '2025-05-01',
-    scores: [85, 87, 89, 90, 92, 91, 93, 94],
-    timeAvg: 32,
-    testsCompleted: 48,
-    subjects: [
-      { id: 1, name: 'Natural sonlar', l1: 99, l2: 97, l3: 92, status: 'strong' },
-      { id: 2, name: 'Kasrlar', l1: 98, l2: 95, l3: 88, status: 'strong' },
-      { id: 3, name: 'O\'nli kasrlar', l1: 97, l2: 93, l3: 85, status: 'strong' },
-      { id: 4, name: 'Foizlar', l1: 96, l2: 92, l3: 82, status: 'strong' },
-    ],
-    program: 'Program A — Level 3 excellence',
-    weakAreas: [],
-    recentTests: [
-      { date: '2025-01-20', subject: 'Aralash test', score: 94, time: 30, level: 3 },
-      { date: '2025-01-18', subject: 'Mantiqiy masalalar', score: 92, time: 33, level: 3 },
-    ],
-  },
-];
+  };
+});
 
 export const SAMPLE_TEST_QUESTIONS = [
   {
@@ -210,7 +148,7 @@ export const SAMPLE_TEST_QUESTIONS = [
   },
   {
     id: 2,
-    subject: 'O\'nli kasrlar',
+    subject: "O'nli kasrlar",
     level: 1,
     question: '2.5 × 4 = ?',
     options: ['8', '9', '10', '10.5'],
@@ -221,7 +159,7 @@ export const SAMPLE_TEST_QUESTIONS = [
     id: 3,
     subject: 'Foizlar',
     level: 2,
-    question: '120 ning 25% i nechaga teng?',
+    question: "120 ning 25% i nechaga teng?",
     options: ['25', '28', '30', '35'],
     correct: 2,
     timeLimit: 90,
@@ -239,8 +177,8 @@ export const SAMPLE_TEST_QUESTIONS = [
     id: 5,
     subject: 'Nisbat va proporsiya',
     level: 3,
-    question: 'Agar 5 ta kitob 45 000 so\'m bo\'lsa, 8 ta kitob necha so\'m?',
-    options: ['68 000', '70 000', '72 000', '75 000'],
+    question: "Agar 5 ta kitob 45 000 so'm bo'lsa, 8 ta kitob necha so'm?",
+    options: ["68 000", "70 000", "72 000", "75 000"],
     correct: 2,
     timeLimit: 120,
   },

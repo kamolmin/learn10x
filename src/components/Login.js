@@ -33,7 +33,7 @@ export default function Login({ onLogin, lang, setLang }) {
   function handleLogin(e) {
     e.preventDefault();
     if (username === 'teacher' && password === '1234') {
-      onLogin({ role: 'teacher', name: 'Mamirjon Holmatov', initials: 'MH' });
+      onLogin({ role: 'teacher', name: 'Mamurjon Akbarov', initials: 'MA' });
     } else if (username === 'student' && password === '1234') {
       onLogin({ role: 'student', name: 'Umarbek Rustamov', initials: 'UR', studentId: 1 });
     } else {

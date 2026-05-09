@@ -6,7 +6,7 @@ import { STUDENTS, CERTIFICATE_LEVELS } from '../data/sampleData';
 const T = {
   uz: {
     title: 'O\'qituvchi Paneli',
-    sub: 'Mamirjon Holmatov — Matematika, Mantiqiy fikrlash, Muammo hal etish',
+    sub: 'Mamurjon Akbarov — Matematika, Mantiqiy fikrlash, Muammo hal etish',
     totalStudents: 'Jami o\'quvchilar',
     onTrack: 'Maqsadda',
     atRisk: 'Xavf ostida',
@@ -26,7 +26,7 @@ const T = {
   },
   en: {
     title: 'Teacher Dashboard',
-    sub: 'Mamirjon Holmatov — Mathematics, Critical Thinking, Problem Solving',
+    sub: 'Mamurjon Akbarov — Mathematics, Critical Thinking, Problem Solving',
     totalStudents: 'Total Students',
     onTrack: 'On Track',
     atRisk: 'At Risk',
