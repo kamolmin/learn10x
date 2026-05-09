@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import { STUDENTS, CERTIFICATE_LEVELS } from '../data/sampleData';
@@ -132,7 +132,6 @@ export default function StudentDashboard({ lang, setLang, user, onLogout }) {
   const avgScore = Math.round(student.scores.reduce((a, b) => a + b, 0) / student.scores.length);
   const lv = CERTIFICATE_LEVELS[student.levelIndex];
   const nextLv = CERTIFICATE_LEVELS[student.levelIndex + 1];
-  const prevLv = student.levelIndex > 0 ? CERTIFICATE_LEVELS[student.levelIndex - 1] : null;
 
   const programKey = getProgramKey(student.program);
   const program = PROGRAMS[programKey];
