@@ -63,10 +63,8 @@ export default function TestInterface({ lang, setLang, user, onLogout }) {
   const [selected, setSelected] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [timeLeft, setTimeLeft] = useState(questions[0].timeLimit);
-  const [questionTime, setQuestionTime] = useState(0);
   const [timeTaken, setTimeTaken] = useState([]);
   const [finished, setFinished] = useState(false);
-  const [showResult, setShowResult] = useState(false);
 
   const handleNext = useCallback(() => {
     const answer = {
@@ -84,7 +82,6 @@ export default function TestInterface({ lang, setLang, user, onLogout }) {
       setCurrent(current + 1);
       setSelected(null);
       setTimeLeft(questions[current + 1].timeLimit);
-      setQuestionTime(0);
     } else {
       setFinished(true);
     }
@@ -100,7 +97,6 @@ export default function TestInterface({ lang, setLang, user, onLogout }) {
         }
         return prev - 1;
       });
-      setQuestionTime(prev => prev + 1);
     }, 1000);
     return () => clearInterval(timer);
   }, [finished, handleNext]);
